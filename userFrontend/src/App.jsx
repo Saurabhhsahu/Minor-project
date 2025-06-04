@@ -13,6 +13,8 @@ import PrivateBankingPage from './pages/PrivateBanking';
 import PublicBankingPage from './pages/PublicBanking';
 import RegistrationPage from './pages/Registration';
 import ContactPage from './pages/Contact';
+import DonorForm from './components/publicBanking/DonorForm'; // ✅ Import the new DonorForm component
+import MyRegistration from './pages/MyRegistration';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -27,8 +29,10 @@ const App = () => {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/private-banking" element={<PrivateBankingPage />} />
           <Route path="/public-banking" element={<PublicBankingPage />} />
-          <Route path="/registration" element={<RegistrationPage setUser={setUser} />} />
+          <Route path="/public-banking/register" element={<DonorForm />} /> {/* ✅ New Route */}
+          <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/my-registration" element={<MyRegistration />} />
         </Routes>
       </main>
       <Footer />

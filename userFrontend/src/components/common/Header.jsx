@@ -16,20 +16,26 @@ const Header = ({ user }) => {
             <span className="text-2xl font-bold text-gray-900">StemCell Bank</span>
           </div>
           <nav className="hidden md:flex space-x-8">
-            {['home', 'about', 'services', 'contact'].map((page) => (
+            {[
+              { label: 'home', path: '/' },
+              { label: 'my registration', path: '/my-registration' },
+              { label: 'about', path: '/about' },
+              { label: 'services', path: '/services' },
+              { label: 'contact', path: '/contact' },
+            ].map(({ label, path }) => (
               <button
-                key={page}
-                onClick={() => navigate(page === 'home' ? '/' : `/${page}`)}
-                className={`capitalize pb-2 transition-colors ${
-                  currentPage === page
+                key={label}
+                onClick={() => navigate(path)}
+                className={`capitalize pb-2 transition-colors cursor-pointer ${currentPage === label
                     ? 'text-blue-600 border-b-2 border-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
-                }`}
+                  }`}
               >
-                {page}
+                {label}
               </button>
             ))}
           </nav>
+
           <div className="flex items-center space-x-4">
             {user ? (
               <span className="text-gray-700">Welcome, {user.name}</span>

@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FeatureCard from '../components/home/Features';
 import BankingOptionCard from '../components/banking/BankingOptions';
@@ -23,17 +23,17 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={() => navigate('/private-banking')}
-                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                onClick={() => navigate('/registration')}
+                className="border-2 cursor-pointer border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
               >
-                Private Banking
+                Register for Banking
               </button>
-              <button
+              {/* <button
                 onClick={() => navigate('/public-banking')}
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                className="border-2 cursor-pointer border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
               >
                 Public Banking
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -72,36 +72,48 @@ const HomePage = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Banking Option</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            <BankingOptionCard
-              title="Private Banking"
-              description="Preserve your baby's cord blood exclusively for your family"
-              features={[
-                "Exclusive family access",
-                "25+ years storage",
-                "HLA matching for family",
-                "Immediate availability"
-              ]}
-              price="Registration fee required"
-              buttonText="Choose Private"
-              onSelect={() => setSelectedOption('private')}
-              highlight={selectedOption === 'private'}
-            />
-            <BankingOptionCard
-              title="Public Banking"
-              description="Donate cord blood to help patients worldwide"
-              features={[
-                "Help save lives globally",
-                "No storage fees",
-                "Contribute to research",
-                "Tax deductible donation"
-              ]}
-              price="Free donation"
-              buttonText="Choose Public"
-              onSelect={() => setSelectedOption('public')}
-              highlight={selectedOption === 'public'}   
-            />
+          <div className='flex flex-col items-center justify-center'>
+            <div className="grid md:grid-cols-2 gap-8">
+              <BankingOptionCard
+                title="Private Banking"
+                description="Preserve your baby's cord blood exclusively for your family"
+                features={[
+                  "Exclusive family access",
+                  "25+ years storage",
+                  "HLA matching for family",
+                  "Immediate availability"
+                ]}
+                price="Registration fee and storage fee required"
+                buttonText="Choose Private"
+                onSelect={() => setSelectedOption('private')}
+                highlight={selectedOption === 'private'}
+              />
+              <BankingOptionCard
+                title="Public Banking"
+                description="Donate cord blood to help patients worldwide"
+                features={[
+                  "Help save lives globally",
+                  "No storage fees",
+                  "Contribute to research",
+                  "Tax deductible donation"
+                ]}
+                price="Registeration fee only"
+                buttonText="Choose Public"
+                onSelect={() => setSelectedOption('public')}
+                highlight={selectedOption === 'public'}
+              />
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // prevent double firing because button inside div
+                navigate('/registration'); // replace with your navigation logic
+              }}
+              className={`w-30 cursor-pointer mt-10 py-3 px-6 rounded-lg font-semibold transition-colors bg-blue-600 text-white hover:bg-blue-700`}
+            >
+              Register
+            </button>
           </div>
+
         </div>
       </section>
     </div>

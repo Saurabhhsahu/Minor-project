@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Download, Upload } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Assuming you have react-router-dom installed
 
-const RegistrationPage = (
-  // { setUser }
-) => {
-  const navigate = useNavigate();
+const RegistrationPage = () => {
 
   const [formData, setFormData] = useState({
     bankingType: '',
@@ -17,7 +15,10 @@ const RegistrationPage = (
     address: ''
   });
 
+  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
+
   const [currentStep, setCurrentStep] = useState(1);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -26,14 +27,54 @@ const RegistrationPage = (
     });
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
+  const handleDownloadForm = () => {
+    // Create a mock downloadable form
+    const formContent = `
+      CORD BLOOD BANKING REGISTRATION FORM
+
+      Banking Type: Public Banking
+      Name: ${formData.firstName} ${formData.lastName}
+      Email: ${formData.email}
+      Phone: ${formData.phone}
+      Due Date: ${formData.dueDate}
+      Hospital: ${formData.hospital}
+
+      Please fill out this form completely and upload it back to complete your registration.
+    `;
+    
+    const blob = new Blob([formContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cord-blood-registration-form.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
+      // For public banking, check if form is uploaded
+      if (formData.bankingType === 'public' && !uploadedFile) {
+        alert('Please upload the completed form to proceed with public banking registration.');
+        return;
+      }
+      
+      navigate('/my-registration'); // Navigate to My Registration page
       // setUser({ name: formData.firstName });
-      alert('Registration completed successfully!');
-      navigate('/');
+      // alert('Registration completed successfully!');
+      // navigate('/'); // Commented out since we don't have router
     }
   };
 
@@ -57,7 +98,7 @@ const RegistrationPage = (
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <form onSubmit={handleSubmit}>
+          <div>
             {currentStep === 1 && (
               <div className="space-y-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Choose Banking Type</h2>
@@ -89,6 +130,43 @@ const RegistrationPage = (
                     </label>
                   ))}
                 </div>
+
+                {/* Show download and upload options only for public banking */}
+                {formData.bankingType === 'public' && (
+                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 className="font-semibold text-green-900 mb-3">Public Banking Requirements</h3>
+                    <p className="text-sm text-green-800 mb-4">
+                      For public banking, please download the additional form, fill it out, and upload it back.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button
+                        type="button"
+                        onClick={handleDownloadForm}
+                        className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download Form
+                      </button>
+                      <div className="flex items-center">
+                        <label className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
+                          <Upload className="w-4 h-4 mr-2" />
+                          Upload Completed Form
+                          <input
+                            type="file"
+                            onChange={handleFileUpload}
+                            accept=".pdf,.doc,.docx,.txt"
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    {uploadedFile && (
+                      <div className="mt-3 p-2 bg-white border border-green-300 rounded text-sm">
+                        <span className="text-green-700">✓ Uploaded: {uploadedFile.name}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -178,15 +256,17 @@ const RegistrationPage = (
                     <div><strong>Phone:</strong> {formData.phone}</div>
                     <div><strong>Due Date:</strong> {formData.dueDate}</div>
                     <div><strong>Hospital:</strong> {formData.hospital}</div>
+                    {formData.bankingType === 'public' && uploadedFile && (
+                      <div><strong>Uploaded Form:</strong> {uploadedFile.name}</div>
+                    )}
                   </div>
                 </div>
-                {formData.bankingType === 'private' && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                    <h3 className="font-semibold text-blue-900 mb-2">Payment Required</h3>
-                    <p className="text-blue-800">Registration fee: $1,995 (includes 20 years storage)</p>
-                    <p className="text-sm text-blue-700 mt-2">Payment methods: Credit card, bank transfer, or payment plan available</p>
-                  </div>
-                )}
+                
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <h3 className="font-semibold text-blue-900 mb-2">Payment Required</h3>
+                  <p className="text-blue-800">Registration fee: $1,995 </p>
+                  <p className="text-sm text-blue-700 mt-2">Payment methods: Credit card, bank transfer, or payment plan available</p>
+                </div>
               </div>
             )}
 
@@ -202,12 +282,13 @@ const RegistrationPage = (
               )}
               <button
                 type="submit"
+                onClick={handleSubmit}
                 className="ml-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 {currentStep === 3 ? 'Complete Registration' : 'Next'}
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
