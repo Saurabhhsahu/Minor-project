@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FeatureCard from '../components/home/Features';
 import BankingOptionCard from '../components/banking/BankingOptions';
+import { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 
 import { Shield, Users, Clock } from 'lucide-react';
 
 const HomePage = () => {
+  const { token } = useContext(UserContext);
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState('private'); // default highlight
 
@@ -23,7 +26,7 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={() => navigate('/registration')}
+                onClick={() => token ? navigate('/registration') : navigate('/auth')}
                 className="border-2 cursor-pointer border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
               >
                 Register for Banking
@@ -106,7 +109,8 @@ const HomePage = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation(); // prevent double firing because button inside div
-                navigate('/registration'); // replace with your navigation logic
+                token ? navigate('/registration') :
+                navigate('/auth'); // replace with your navigation logic
               }}
               className={`w-30 cursor-pointer mt-10 py-3 px-6 rounded-lg font-semibold transition-colors bg-blue-600 text-white hover:bg-blue-700`}
             >

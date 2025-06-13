@@ -34,12 +34,12 @@ const ServicesPage = () => {
                 <span>Perfect genetic match</span>
               </li>
             </ul>
-            <button
+            {/* <button
               onClick={() => navigate('private-banking')}
               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Learn More
-            </button>
+            </button> */}
           </div>
           
           <div className="bg-white rounded-lg shadow-lg p-8">
@@ -61,12 +61,12 @@ const ServicesPage = () => {
                 <span>Support research</span>
               </li>
             </ul>
-            <button
+            {/* <button
               onClick={() => navigate('public-banking')}
               className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
             >
               Learn More
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

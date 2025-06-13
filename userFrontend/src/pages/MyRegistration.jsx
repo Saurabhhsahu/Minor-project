@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { User, Calendar, MapPin, Phone, Mail, FileText, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
+import React, { useState, useContext } from 'react';
+import { User, Calendar, MapPin, Phone, Mail, FileText, CheckCircle, Clock, AlertCircle, Plus, Lock } from 'lucide-react';
+import { UserContext } from '../context/UserContext';
 
 function MyRegistrationPage() {
   // Mock user orders state (in a real app, this would come from a backend/database)
@@ -47,6 +48,12 @@ function MyRegistrationPage() {
       estimatedProcessing: '3-5 business days'
     }
   ]);
+  // Mock user context and navigation
+  const {token} = useContext(UserContext) // Set to false to test login prompt
+  const navigate = (path) => {
+    console.log(`Navigating to: ${path}`);
+    // In your real app, this would be: useNavigate() from react-router-dom
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -68,6 +75,30 @@ function MyRegistrationPage() {
     }
   };
 
+  // If no token, show login prompt
+  if (!token) {
+    return (
+      <div className="py-16 bg-gray-50 min-h-screen">
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h2>
+            <p className="text-gray-600 mb-6">
+              You need to be logged in to view your registrations. Please login to continue.
+            </p>
+            <button 
+              onClick={() => navigate('/auth')}
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Login Now
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If token exists, show the main page
   return (
     <div className="py-16 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,16 +109,18 @@ function MyRegistrationPage() {
               <h1 className="text-3xl font-bold text-gray-900">My Registrations</h1>
               <p className="text-gray-600 mt-2">Track your cord blood banking registrations and their status</p>
             </div>
-            <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              <Plus className="w-4 h-4 mr-2" />
-              New Registration
-            </button>
+            <div onClick={() => navigate('/registration')} >
+              <button className="flex cursor-pointer items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-2" />
+                New Registration
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Orders List */}
         <div className="space-y-6">
-          {userOrders.length === 0 ? (
+          {(userOrders.length === 0 ) ? (
             <div className="bg-white rounded-lg shadow-sm p-12 text-center">
               <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Registrations Yet</h3>
